@@ -1,25 +1,5 @@
 #!/bin/bash
 
-# Scripts to automate Reconnassaince step.
-# It performs:
-#	- domains and subdomains enumeration.
-#	- check for domain takeover.
-#	- check for alive HTTP or HTTPS websites.
-#	- take a screenshot of alive webistes.
-#	- perform a fast port scan of discovered domains and subdomains.
-#	- look for old web sites versions which might contain sensitive data or files.
-#	- check on shodan a basic hostname query. An API KEY is needed.
-
-# Dependencies:
-#	- assetfinder
-#	- httprobe
-#	- subjack
-#	- whatweb
-#	- gowitness 
-#	- nmap
-#	- waybackurls
-#	- shodan
-
 # Fail on unset var usage
 set -o nounset
 # Prevents errors in a pipeline from being masked
@@ -364,7 +344,7 @@ function printHelp() {
   cat << EOF
 Usage: allInOne.sh [--help] --target TARGET [--key KEY]
 
-AllInOne bash script for OSINT combines different tools to harvest public information about the target.
+AllInOne bash script for Reconnaissance which combines different tools to harvest information about the target.
 
 Arguments:
   --help                   Show this help message and exit
