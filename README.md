@@ -17,10 +17,10 @@ Usage: allInOne.sh [--help] [--install] --target TARGET [--key KEY]
 AllInOne bash script for Reconnaissance which combines different tools to harvest information about the target.
 
 Arguments:
-  --help                   Show this help message and exit
-  --install                Install and check dependencies
-  --target target          Target domain
-  --key KEY                Shodan API KEY
+		--help					    Show this help message and exit
+		--install				    Install and check dependencies
+		--target target			Target domain
+		--key KEY				    Shodan API KEY
 ```
 # Dependencies:
 - whois

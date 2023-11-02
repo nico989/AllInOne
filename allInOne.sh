@@ -11,7 +11,7 @@ TARGET=""
 KEY=""
 
 function installDependencies() {
-    echo "[+] Update system and check dependencies..."
+	echo "[+] Update system and check dependencies..."
 	sudo apt update > /dev/null 2>&1
 
 	dpkg -s whois > /dev/null 2>&1
@@ -56,7 +56,7 @@ function installDependencies() {
 		sudo apt install shodan -y > /dev/null 2>&1
 	fi
 
-    user=$(whoami)
+	user=$(whoami)
 
 	ls /home/$user/go/bin/subfinder > /dev/null 2>&1
 	if [ $? -ne 0 ];
@@ -86,13 +86,13 @@ function installDependencies() {
 		go install github.com/tomnomnom/waybackurls@latest > /dev/null 2>&1
 	fi
 
-    echo "[+] You are good to go!"
+	echo "[+] You are good to go!"
 }
 
 function goWhois() {
 	if [ ! -d "$TARGET/whois" ];
 	then
-    	mkdir $TARGET/whois
+		mkdir $TARGET/whois
 	fi
 
 	echo "[+] Printing domain information with whois..."
@@ -102,7 +102,7 @@ function goWhois() {
 function goAssetfinder() {
 	if [ ! -d "$TARGET/assetfinder" ];
 	then
-    	mkdir $TARGET/assetfinder
+		mkdir $TARGET/assetfinder
 	fi
 
 	echo "[+] Harvesting subdomains with assetfinder..."
@@ -114,7 +114,7 @@ function goAssetfinder() {
 function goSubfinder() {
 	if [ ! -d "$TARGET/subfinder" ];
 	then
-    	mkdir $TARGET/subfinder
+		mkdir $TARGET/subfinder
 	fi
 
 	echo "[+] Harvesting subdomains with subfinder..."
@@ -124,7 +124,7 @@ function goSubfinder() {
 function _mergeAssets() {
 	if [ ! -d "$TARGET/mergeAssets" ];
 	then
-    	mkdir $TARGET/mergeAssets
+		mkdir $TARGET/mergeAssets
 	fi
 
 	echo "[+] Merge assets from assetfinder and subfinder..."
@@ -156,7 +156,7 @@ function goSubjack() {
 function goHttprobe() {
 	if [ ! -d "$TARGET/httprobe" ];
 	then
-    	mkdir $TARGET/httprobe
+		mkdir $TARGET/httprobe
 	fi
 
 	echo "[+] Probing for alive domains (HTTP/HTTPS) with httprobe..."
@@ -168,7 +168,7 @@ function goHttprobe() {
 function goWhatweb() {
 	if [ ! -d "$TARGET/whatweb" ];
 	then
-    	mkdir $TARGET/whatweb
+		mkdir $TARGET/whatweb
 	fi
 
 	echo "[+] Getting web sites overview with whatweb..."
@@ -178,7 +178,7 @@ function goWhatweb() {
 function goGowitness() {
 	if [ ! -d "$TARGET/gowitness" ];
 	then
-    	mkdir $TARGET/gowitness
+		mkdir $TARGET/gowitness
 	fi
 
 	echo "[+] Taking screenshots with gowitness..."
@@ -188,7 +188,7 @@ function goGowitness() {
 function goNmap() {
 	if [ ! -d "$TARGET/nmap" ];
 	then
-    	mkdir $TARGET/nmap
+		mkdir $TARGET/nmap
 	fi
 
 	echo "[+] Nmap scanning for open ports..."
@@ -387,10 +387,10 @@ Usage: allInOne.sh [--help] [--install] --target TARGET [--key KEY]
 AllInOne bash script for Reconnaissance which combines different tools to harvest information about the target.
 
 Arguments:
-  --help                   Show this help message and exit
-  --install				   Install and check dependencies
-  --target target          Target domain
-  --key KEY                Shodan API KEY
+	--help					Show this help message and exit
+	--install				Install and check dependencies
+	--target target			Target domain
+	--key KEY				Shodan API KEY
 
 EOF
   exit 1
@@ -398,37 +398,37 @@ EOF
 
 function main() {
 	while [ $# -gt 0 ]; do
-      case $1 in
-          --target)
-              TARGET="$2"
-              shift
-              shift
-          ;;
-          --key)
-              $KEY="$2"
-              shift
-              shift
-          ;;
+	  case $1 in
+		  --target)
+			  TARGET="$2"
+			  shift
+			  shift
+		  ;;
+		  --key)
+			  $KEY="$2"
+			  shift
+			  shift
+		  ;;
 		  --install)
-            installDependencies
-          ;;
-          --help)
-              printHelp
-          ;;
-          -*)
-              echo "[-] Unknown argument '$1'" && exit 1
-          ;;
-          *)
-              ARGS+=("$1")
-              shift
-          ;;
-      esac
+			installDependencies
+		  ;;
+		  --help)
+			  printHelp
+		  ;;
+		  -*)
+			  echo "[-] Unknown argument '$1'" && exit 1
+		  ;;
+		  *)
+			  ARGS+=("$1")
+			  shift
+		  ;;
+	  esac
   	done
 
 	echo "[+] Start AllInOne Reconnassaince..."
 	if [ ! -d "$TARGET" ];
 	then
-    	mkdir $TARGET
+		mkdir $TARGET
 	fi
 
 	goWhois
