@@ -12,12 +12,13 @@ It performs:
 # Usage
 ```
 $ ./allInOne.sh --help
-Usage: allInOne.sh [--help] --target TARGET [--key KEY]
+Usage: allInOne.sh [--help] [--install] --target TARGET [--key KEY]
 
 AllInOne bash script for Reconnaissance which combines different tools to harvest information about the target.
 
 Arguments:
   --help                   Show this help message and exit
+  --install                Install and check dependencies
   --target target          Target domain
   --key KEY                Shodan API KEY
 ```
@@ -26,7 +27,7 @@ Arguments:
 - httprobe
 - subjack
 - whatweb
-- gowitness 
+- gowitness (Google Chome headless is needed)
 - nmap
 - waybackurls
 - shodan
