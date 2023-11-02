@@ -58,6 +58,13 @@ function installDependencies() {
 
     user=$(whoami)
 
+	ls /home/$user/go/bin/subfinder > /dev/null 2>&1
+	if [ $? -ne 0 ];
+	then
+		echo "[+] Install subfinder..."
+		go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest > /dev/null 2>&1
+	fi
+
 	ls /home/$user/go/bin/subjack > /dev/null 2>&1
 	if [ $? -ne 0 ];
 	then
@@ -88,6 +95,7 @@ function goWhois() {
     	mkdir $TARGET/whois
 	fi
 
+	echo "[+] Printing domain information with whois..."
 	whois $TARGET > $TARGET/whois/whois.txt
 }
 
@@ -101,6 +109,29 @@ function goAssetfinder() {
 	assetfinder $TARGET > $TARGET/assetfinder/tmp.txt
 	cat $TARGET/assetfinder/tmp.txt | grep "$TARGET" | sort -u > $TARGET/assetfinder/assetfinder.txt
 	rm $TARGET/assetfinder/tmp.txt
+}
+
+function goSubfinder() {
+	if [ ! -d "$TARGET/subfinder" ];
+	then
+    	mkdir $TARGET/subfinder
+	fi
+
+	echo "[+] Harvesting subdomains with subfinder..."
+	subfinder -d $TARGET -o $TARGET/subfinder/subfinder.txt
+}
+
+function _mergeAssets() {
+	if [ ! -d "$TARGET/mergeAssets" ];
+	then
+    	mkdir $TARGET/mergeAssets
+	fi
+
+	echo "[+] Merge assets from assetfinder and subfinder..."
+	cp $TARGET/assetfinder/assetfinder.txt $TARGET/mergeAssets/tmp.txt
+	cat $TARGET/subfinder/subfinder.txt >> $TARGET/mergeAssets/tmp.txt
+	cat $TARGET/mergeAssets/tmp.txt | sort -u > $TARGET/mergeAssets/mergeAssets.txt
+	rm $TARGET/mergeAssets/tmp.txt
 }
 
 function goSubjack() {
@@ -119,7 +150,7 @@ function goSubjack() {
 	then
 		touch $TARGET/subjack/subjack.txt
 	fi
-	subjack -w $TARGET/assetfinder/assetfinder.txt -c $TARGET/subjack/fingerprints.json -o $TARGET/subjack/subjack.txt -t 100 -timeout 30 -ssl -v -m > /dev/null 2>&1
+	subjack -w $TARGET/mergeAssets/mergeAssets.txt -c $TARGET/subjack/fingerprints.json -o $TARGET/subjack/subjack.txt -t 100 -timeout 30 -ssl -v -m > /dev/null 2>&1
 }
 
 function goHttprobe() {
@@ -129,7 +160,7 @@ function goHttprobe() {
 	fi
 
 	echo "[+] Probing for alive domains (HTTP/HTTPS) with httprobe..."
-	cat $TARGET/assetfinder/assetfinder.txt | httprobe --prefer-https | sed 's/https\?:\/\///' > $TARGET/httprobe/tmp.txt
+	cat $TARGET/mergeAssets/mergeAssets.txt | httprobe --prefer-https | sed 's/https\?:\/\///' > $TARGET/httprobe/tmp.txt
 	sort -u $TARGET/httprobe/tmp.txt > $TARGET/httprobe/httprobe.txt
 	rm $TARGET/httprobe/tmp.txt
 }
@@ -402,6 +433,8 @@ function main() {
 
 	goWhois
 	goAssetfinder
+	goSubfinder
+	_mergeAssets
 	goSubjack
 	goHttprobe
 	goWhatweb

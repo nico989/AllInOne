@@ -23,9 +23,11 @@ Arguments:
   --key KEY                Shodan API KEY
 ```
 # Dependencies:
+- whois
 - assetfinder
-- httprobe
+- subfinder
 - subjack
+- httprobe
 - whatweb
 - gowitness (Google Chome headless is needed)
 - nmap
