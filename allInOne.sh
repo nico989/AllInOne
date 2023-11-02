@@ -203,7 +203,7 @@ function goWaybackurls() {
 	fi
 
 	echo "[+] Running waybackurls..."
-	cat $TARGET/assetfinder/assetfinder.txt | waybackurls > $TARGET/waybackurls/tmp.txt
+	cat $TARGET/mergeAssets/mergeAssets.txt | waybackurls > $TARGET/waybackurls/tmp.txt
 	sort -u $TARGET/waybackurls/tmp.txt > $TARGET/waybackurls/waybackurls.txt
 	rm $TARGET/waybackurls/tmp.txt 
 	
