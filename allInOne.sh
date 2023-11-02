@@ -103,18 +103,6 @@ function goAssetfinder() {
 	rm $TARGET/assetfinder/tmp.txt
 }
 
-function goHttprobe() {
-	if [ ! -d "$TARGET/httprobe" ];
-	then
-    	mkdir $TARGET/httprobe
-	fi
-
-	echo "[+] Probing for alive domains (HTTP/HTTPS) with httprobe..."
-	cat $TARGET/assetfinder/assetfinder.txt | httprobe | sed 's/https\?:\/\///' > $TARGET/httprobe/tmp.txt
-	sort -u $TARGET/httprobe/tmp.txt > $TARGET/httprobe/httprobe.txt
-	rm $TARGET/httprobe/tmp.txt
-}
-
 function goSubjack() {
 	if [ ! -d "$TARGET/subjack" ];
 	then
@@ -131,7 +119,19 @@ function goSubjack() {
 	then
 		touch $TARGET/subjack/subjack.txt
 	fi
-	subjack -w $TARGET/httprobe/httprobe.txt -c $TARGET/subjack/fingerprints.json -o $TARGET/subjack/subjack.txt -t 100 -timeout 30 -ssl -v -m > /dev/null 2>&1
+	subjack -w $TARGET/assetfinder/assetfinder.txt -c $TARGET/subjack/fingerprints.json -o $TARGET/subjack/subjack.txt -t 100 -timeout 30 -ssl -v -m > /dev/null 2>&1
+}
+
+function goHttprobe() {
+	if [ ! -d "$TARGET/httprobe" ];
+	then
+    	mkdir $TARGET/httprobe
+	fi
+
+	echo "[+] Probing for alive domains (HTTP/HTTPS) with httprobe..."
+	cat $TARGET/assetfinder/assetfinder.txt | httprobe --prefer-https | sed 's/https\?:\/\///' > $TARGET/httprobe/tmp.txt
+	sort -u $TARGET/httprobe/tmp.txt > $TARGET/httprobe/httprobe.txt
+	rm $TARGET/httprobe/tmp.txt
 }
 
 function goWhatweb() {
@@ -402,8 +402,8 @@ function main() {
 
 	goWhois
 	goAssetfinder
-	goHttprobe
 	goSubjack
+	goHttprobe
 	goWhatweb
 	goGowitness
 	goNmap
