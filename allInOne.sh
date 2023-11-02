@@ -72,11 +72,6 @@ function installDependencies() {
 		go install github.com/tomnomnom/waybackurls@latest > /dev/null 2>&1
 	fi
 
-	if [ ! -d "$TARGET" ];
-	then
-    	mkdir $TARGET
-	fi
-
     echo "[+] You are good to go!"
 }
 
@@ -140,9 +135,7 @@ function goGowitness() {
 	fi
 
 	echo "[+] Taking screenshots with gowitness..."
-	cd $TARGET/gowitness
-	gowitness file -f ../httprobe/httprobe.txt -t 5 --disable-db --disable-logging
-	cd ../../
+	gowitness file -f ../httprobe/httprobe.txt -P $TARGET/gowitness -t 5 --disable-db --disable-logging
 }
 
 function goNmap() {
@@ -342,14 +335,16 @@ function goShodan() {
 
 function printHelp() {
   cat << EOF
-Usage: allInOne.sh [--help] --target TARGET [--key KEY]
+Usage: allInOne.sh [--help] [--install] --target TARGET [--key KEY]
 
 AllInOne bash script for Reconnaissance which combines different tools to harvest information about the target.
 
 Arguments:
   --help                   Show this help message and exit
+  --install				   Install and check dependencies
   --target target          Target domain
   --key KEY                Shodan API KEY
+
 EOF
   exit 1
 }
@@ -367,6 +362,9 @@ function main() {
               shift
               shift
           ;;
+		  --install)
+            installDependencies
+          ;;
           --help)
               printHelp
           ;;
@@ -381,7 +379,11 @@ function main() {
   	done
 
 	echo "[+] Start AllInOne Reconnassaince..."
-	installDependencies
+	if [ ! -d "$TARGET" ];
+	then
+    	mkdir $TARGET
+	fi
+
 	goAssetfinder
 	goHttprobe
 	goSubjack
