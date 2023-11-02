@@ -7,7 +7,7 @@ It performs:
 - take a screenshot of active websites.
 - perform a fast port scan of discovered domains and subdomains.
 - look for old web sites versions which might contain sensitive data or files.
-- check on shodan a basic hostname query. An API KEY is needed.
+- perform hostname query on Shodan. An API KEY is needed.
 
 # Usage
 ```
