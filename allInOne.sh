@@ -14,6 +14,13 @@ function installDependencies() {
     echo "[+] Update system and check dependencies..."
 	sudo apt update > /dev/null 2>&1
 
+	dpkg -s whois > /dev/null 2>&1
+	if [ $? -ne 0 ];
+	then
+		echo "[+] Install whois..."
+		sudo apt install whois -y > /dev/null 2>&1
+	fi
+
 	dpkg -s assetfinder > /dev/null 2>&1
 	if [ $? -ne 0 ];
 	then
@@ -75,6 +82,15 @@ function installDependencies() {
     echo "[+] You are good to go!"
 }
 
+function goWhois() {
+	if [ ! -d "$TARGET/whois" ];
+	then
+    	mkdir $TARGET/whois
+	fi
+
+	whois $TARGET > $TARGET/whois/whois.txt
+}
+
 function goAssetfinder() {
 	if [ ! -d "$TARGET/assetfinder" ];
 	then
@@ -115,7 +131,7 @@ function goSubjack() {
 	then
 		touch $TARGET/subjack/subjack.txt
 	fi
-	subjack -w $TARGET/httprobe/httprobe.txt -c $TARGET/subjack/fingerprints.json -o $TARGET/subjack/subjack.txt -t 100 -timeout 30 -ssl -v > /dev/null 2>&1
+	subjack -w $TARGET/httprobe/httprobe.txt -c $TARGET/subjack/fingerprints.json -o $TARGET/subjack/subjack.txt -t 100 -timeout 30 -ssl -v -m > /dev/null 2>&1
 }
 
 function goWhatweb() {
@@ -384,6 +400,7 @@ function main() {
     	mkdir $TARGET
 	fi
 
+	goWhois
 	goAssetfinder
 	goHttprobe
 	goSubjack
