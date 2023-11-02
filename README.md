@@ -1,5 +1,5 @@
 # AllInOne
-Scripts to automate Reconnassaince step.
+Scripts to automate Reconnaissance step.
 It performs:
 - domains and subdomains enumeration.
 - check for domain takeover.
