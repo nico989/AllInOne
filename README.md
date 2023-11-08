@@ -19,7 +19,7 @@ AllInOne bash script for Reconnaissance which combines different tools to harves
 Arguments:
 		--help					    Show this help message and exit
 		--install				    Install and check dependencies
-		--target target			Target domain
+		--target target				Target domain
 		--key KEY				    Shodan API KEY
 ```
 # Dependencies:
