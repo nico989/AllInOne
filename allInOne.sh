@@ -49,7 +49,7 @@ function installDependencies() {
 		sudo apt install nmap -y > /dev/null 2>&1
 	fi
 
-	dpkg -s shodan > /dev/null 2>&1
+	dpkg -S `which shodan` > /dev/null 2>&1
 	if [ $? -ne 0 ];
 	then
 		echo "[+] Install shodan..."
@@ -87,6 +87,7 @@ function installDependencies() {
 	fi
 
 	echo "[+] You are good to go!"
+	exit 0
 }
 
 function goWhois() {
@@ -443,6 +444,7 @@ function main() {
 	goWaybackurls
 	goShodan
 	echo "[+] Good luck reviewing the results!"
+	exit 0
 }
 
 main "$@"
