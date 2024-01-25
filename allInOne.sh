@@ -356,9 +356,7 @@ function goWaybackurls() {
 
 function goShodan() {
 	local hostname=$(echo $TARGET | rev | cut -d '.' -f -2 | rev)
-	echo $hostname
 	local organization=$(echo $TARGET | rev | cut -d '.' -f 2 | rev)
-	echo $organization
 
 	if [ -z "$KEY" ];
 	then
