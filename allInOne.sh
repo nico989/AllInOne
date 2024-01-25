@@ -4,8 +4,6 @@
 set -o nounset
 # Prevents errors in a pipeline from being masked
 set -o pipefail
-# Disable wildcard character expansion
-set -o noglob
 
 TARGET=""
 KEY=""
@@ -119,7 +117,7 @@ function goSubfinder() {
 	fi
 
 	echo "[+] Harvesting subdomains with subfinder..."
-	subfinder -d $TARGET -o $TARGET/subfinder/subfinder.txt
+	subfinder -d $TARGET -o $TARGET/subfinder/subfinder.txt > /dev/null 2>&1
 }
 
 function _mergeAssets() {
@@ -357,12 +355,15 @@ function goWaybackurls() {
 }
 
 function goShodan() {
-	local hostname=${TARGET%.*}
+	local hostname=$(echo $TARGET | rev | cut -d '.' -f -2 | rev)
+	echo $hostname
+	local organization=$(echo $TARGET | rev | cut -d '.' -f 2 | rev)
+	echo $organization
 
 	if [ -z "$KEY" ];
 	then
 		echo "[-] No Shodan API KEY Provided, exit."
-		exit 1
+		return
 	fi
 	echo "[+] Start Shodan searching for hostname..."
 
@@ -375,10 +376,11 @@ function goShodan() {
 	if [ $? -ne 0 ];
 	then
 		echo "[-] Invalid Shodan API KEY, exit."
-		exit 1
+		return
 	fi
 
-	shodan download --limit -1 $TARGET/shodan/shodan.json.gz hostname:$hostname > /dev/null 2>&1
+	shodan download --limit -1 $TARGET/shodan/hostname.json.gz hostname:$hostname > /dev/null 2>&1
+	shodan download --limit -1 $TARGET/shodan/organization.json.gz organization:$organization > /dev/null 2>&1
 }
 
 function printHelp() {
@@ -401,30 +403,36 @@ function main() {
 	while [ $# -gt 0 ]; do
 	  case $1 in
 		  --target)
-			  TARGET="$2"
-			  shift
-			  shift
+				TARGET="$2"
+				shift
+				shift
 		  ;;
 		  --key)
-			  $KEY="$2"
-			  shift
-			  shift
+				KEY="$2"
+				shift
+				shift
 		  ;;
 		  --install)
-			installDependencies
+				installDependencies
 		  ;;
 		  --help)
-			  printHelp
+				printHelp
 		  ;;
 		  -*)
-			  echo "[-] Unknown argument '$1'" && exit 1
+				echo "[-] Unknown argument '$1'" && exit 1
 		  ;;
 		  *)
-			  ARGS+=("$1")
-			  shift
+				ARGS+=("$1")
+				shift
 		  ;;
 	  esac
   	done
+
+	if [ -z $TARGET ];
+	then
+		echo "[-] Target can not be empty. Exiting..."
+		exit 1
+	fi
 
 	echo "[+] Start AllInOne Reconnassaince..."
 	if [ ! -d "$TARGET" ];
